@@ -19,5 +19,9 @@ public class MonListener implements Listener {
             Component.text("Welcome " + event.getPlayer().getName() + " !")
                 .color(net.kyori.adventure.text.format.NamedTextColor.GREEN)
         );
+        if (!event.getPlayer().hasPlayedBefore()) {
+            // Première connexion du joueur et message de regle
+            event.getPlayer().sendMessage("§aWelcome on the serveur !");
+        }
     }
 }
