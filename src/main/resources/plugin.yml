@@ -7,12 +7,12 @@ description: A plugin that allows sending a welcome message to each player, and 
 
 # Déclaration des commandes (doit correspondre au code Java)
 commands:
-  hello:
-    description: Send a welcome message to the player.
-    usage: /hello
+  rules:
+    description: Send the rules of the server to the player.
+    usage: /rules
 
 # Déclaration des permissions (optionnel, exemple)
 permissions:
-  Welcomer.hello:
-    description: Allows the use of the /hello command.
+  Welcomer.rules:
+    description: Allows the use of the /rules command.
     default: true

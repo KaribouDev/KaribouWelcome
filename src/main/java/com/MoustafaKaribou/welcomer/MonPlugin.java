@@ -30,13 +30,13 @@ public final class MonPlugin extends JavaPlugin {
 
     /**
      * Gère l'exécution des commandes déclarées dans plugin.yml.
-     * Ici on gère la commande /bonjour.
+     * Ici on gère la commande /rule.
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (command.getName().equalsIgnoreCase("hello")) {
+        if (command.getName().equalsIgnoreCase("rule")) {
             if (sender instanceof Player player) {
-                player.sendMessage("§aWelcome " + player.getName() + " !.");
+                player.sendMessage("§aHere are the rules of the server.");
             } else {
                 sender.sendMessage("This command must be executed by a player.");
             }
