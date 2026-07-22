@@ -2,22 +2,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- ==================== INFOS DU PROJET ====================-->
-    <groupId>MoustafaKaribou</groupId>
+
+    <!-- ==================== INFOS DU PROJET ==================== -->
+
+    <groupId>KaribouDev</groupId>
     <artifactId>karibouwelcome</artifactId>
     <version>1.1.0</version>
+
     <packaging>jar</packaging>
+
     <name>KaribouWelcome</name>
 
+
     <properties>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <!-- ==================== DEPOT PAPER/SPIGOT ==================== -->
+
+    <!-- ==================== DEPOT PAPER ==================== -->
+
     <repositories>
         <repository>
             <id>papermc</id>
@@ -25,36 +32,49 @@
         </repository>
     </repositories>
 
-    <!-- ==================== DEPENDANCE API ==================== -->
+
+    <!-- ==================== DEPENDANCES ==================== -->
+
     <dependencies>
+
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <!-- Change la version selon ta version de serveur Minecraft -->
             <version>26.1.2.build.74-stable</version>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
+
+    <!-- ==================== BUILD ==================== -->
+
     <build>
-        <!-- Nom du .jar généré -->
+
         <finalName>${project.name}-${project.version}</finalName>
 
         <plugins>
-            <!-- Permet de compiler avec la bonne version de Java -->
+
+            <!-- Compilation Java 25 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.14.0</version>
+                <configuration>
+                    <release>25</release>
+                </configuration>
             </plugin>
 
-            <!-- Filtre plugin.yml pour remplacer ${project.version} automatiquement -->
+
+            <!-- Permet ${project.version} dans plugin.yml -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.3.1</version>
             </plugin>
+
         </plugins>
+
 
         <resources>
             <resource>
@@ -62,5 +82,7 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+
     </build>
+
 </project>
