@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- ==================== INFOS DU PROJET ==================== -->
+    <!-- ==================== INFOS DU PROJET ====================-->
     <groupId>MoustafaKaribou</groupId>
-    <artifactId>welcomer</artifactId>
+    <artifactId>karibouwelcome</artifactId>
     <version>1.1.0</version>
     <packaging>jar</packaging>
-    <name>Welcomer</name>
+    <name>KaribouWelcome</name>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
