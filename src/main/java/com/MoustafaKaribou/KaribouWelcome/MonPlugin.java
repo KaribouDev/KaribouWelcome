@@ -7,6 +7,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.MoustafaKaribou.KaribouWelcome.listeners.MonListener;
 
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+
 /**
  * Classe principale du plugin.
  * C'est le point d'entrée : Bukkit/Paper appelle onEnable() au démarrage
@@ -18,9 +20,10 @@ public final class MonPlugin extends JavaPlugin {
     public void onEnable() {
         // Message affiché dans la console au démarrage du plugin
         getLogger().info("Welcomer has been successfully activated !");
+        
 
         // Enregistrement de l'écouteur d'événements (voir MonListener.java)
-        getServer().getPluginManager().registerEvents(new MonListener(), this);
+        getServer().getPluginManager().registerEvents(new MonListener(this), this);
     }
 
     @Override
@@ -29,13 +32,12 @@ public final class MonPlugin extends JavaPlugin {
     }
 
     public void sendRules(Player player) {
-        player.sendMessage("§6========== Rules ==========");
-        player.sendMessage("§71. Respect other players.");
-        player.sendMessage("§72. No cheating.");
-        player.sendMessage("§73. No griefing.");
-        player.sendMessage("§74. Have fun!");
-        player.sendMessage("§6===========================");
+    for (String line : getConfig().getStringList("rules")) {
+        player.sendMessage(
+            LegacyComponentSerializer.legacyAmpersand().deserialize(line)
+        );
     }
+}
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

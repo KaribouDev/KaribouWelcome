@@ -1,5 +1,6 @@
 package com.MoustafaKaribou.KaribouWelcome.listeners;
 
+import com.MoustafaKaribou.KaribouWelcome.MonPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -8,6 +9,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class MonListener implements Listener {
+
+    private final MonPlugin plugin;
+
+    public MonListener(MonPlugin plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -19,14 +26,7 @@ public class MonListener implements Listener {
         );
 
         if (!player.hasPlayedBefore()) {
-            player.sendMessage(Component.text("Welcome to the server!", NamedTextColor.GOLD));
-            player.sendMessage(Component.text("------------------------------", NamedTextColor.GRAY));
-            player.sendMessage(Component.text("Server Rules", NamedTextColor.YELLOW));
-            player.sendMessage(Component.text("1. Respect other players.", NamedTextColor.WHITE));
-            player.sendMessage(Component.text("2. No cheating.", NamedTextColor.WHITE));
-            player.sendMessage(Component.text("3. No griefing.", NamedTextColor.WHITE));
-            player.sendMessage(Component.text("4. Have fun!", NamedTextColor.WHITE));
-            player.sendMessage(Component.text("------------------------------", NamedTextColor.GRAY));
+            plugin.sendRules(player);
         }
     }
 }
