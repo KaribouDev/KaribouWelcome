@@ -1,17 +1,44 @@
+# ============================================================
+# KaribouWelcome Configuration
+# ============================================================
+#
+# Formatting uses MiniMessage:
+# https://docs.advntr.dev/minimessage/format.html
+#
+# Variables:
+#   %player% -> Player name
+#
+# Examples:
+#
+# <green>Hello
+# <gold><bold>Important
+# <red>Error
+# <gradient:#ff0000:#ffff00>Gradient
+# <rainbow>Rainbow text
+#
+# ============================================================
+
 public:
-  new-player: "&e%player% joined the server for the first time!"
-  login: "&6Welcome back, &7%player%&6!"
+
+  # Message shown to everyone when a player joins
+  login: "<green>%player% joined the server."
+
+  # Message shown to everyone when a player joins for the first time
+  new-player: "<gold><bold>%player%</bold> joined the server for the first time!"
 
 private:
-  welcome:
-    - "&6Welcome to the server, &7%player%&6!"
-    - "&7We hope you enjoy your stay."
-    - "&7You can see the rules at any moment with /rule."
 
+  # Sent only to new players
+  welcome:
+    - "<gold>Welcome to the server, <yellow>%player%</yellow><gold>!"
+    - "<gray>We hope you enjoy your stay."
+    - "<gray>Use <yellow>/rule</yellow> to read the rules again."
+
+  # Rules displayed with /rule
   rules:
-    - "&6========== Rules =========="
-    - "&71. Respect other players."
-    - "&72. No cheating."
-    - "&73. No griefing."
-    - "&74. Have fun!"
-    - "&6==========================="
+    - "<gold>========== Rules =========="
+    - "<white>1. Respect other players."
+    - "<white>2. No cheating."
+    - "<white>3. No griefing."
+    - "<white>4. Have fun!"
+    - "<gold>==========================="
