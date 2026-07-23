@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.MoustafaKaribou.KaribouWelcome.listeners.MonListener;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 /**
@@ -21,6 +22,7 @@ public final class MonPlugin extends JavaPlugin {
         // Message affiché dans la console au démarrage du plugin
         getLogger().info("Welcomer has been successfully activated !");
         
+        saveDefaultConfig(); // Charge/crée config.yml
 
         // Enregistrement de l'écouteur d'événements (voir MonListener.java)
         getServer().getPluginManager().registerEvents(new MonListener(this), this);
@@ -41,11 +43,37 @@ public final class MonPlugin extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
+        // Commande /rule
         if (command.getName().equalsIgnoreCase("rule")) {
+
             if (sender instanceof Player player) {
                 sendRules(player);
             } else {
                 sender.sendMessage("This command must be executed by a player.");
+            }
+
+            return true;
+        }
+
+        // Commande /karibouwelcome
+        if (command.getName().equalsIgnoreCase("karibouwelcome")) {
+
+            if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+
+                if (!sender.hasPermission("karibouwelcome.reload")) {
+                    sender.sendMessage(
+                        Component.text("You don't have permission.")
+                    );
+                    return true;
+                }
+
+                reloadConfig();
+
+                sender.sendMessage(
+                    Component.text("Configuration reloaded.")
+                );
+                return true;
             }
             return true;
         }
