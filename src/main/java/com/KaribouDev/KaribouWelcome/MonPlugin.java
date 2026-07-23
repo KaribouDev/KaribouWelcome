@@ -33,7 +33,7 @@ public final class MonPlugin extends JavaPlugin {
         getLogger().info("KaribouWelcome has been deactivated.");
     }
 
-    public void sendConfigMessage(Player player, String path) {
+    public void sendConfigMessages(Player player, String path) {
         for (String line : getConfig().getStringList(path)) {
             line = line.replace("%player%", player.getName());
 
@@ -41,6 +41,12 @@ public final class MonPlugin extends JavaPlugin {
                 LegacyComponentSerializer.legacyAmpersand().deserialize(line)
             );
         }
+    }
+    public Component getConfigMessage(Player player, String path) {
+        String line = getConfig().getString(path, "");
+        line = line.replace("%player%", player.getName());
+
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(line);
     }
 
     @Override
@@ -50,7 +56,7 @@ public final class MonPlugin extends JavaPlugin {
         if (command.getName().equalsIgnoreCase("rule")) {
 
             if (sender instanceof Player player) {
-                sendConfigMessage(player, "rules");
+                sendConfigMessages(player, "rules");
             } else {
                 sender.sendMessage("This command must be executed by a player.");
             }

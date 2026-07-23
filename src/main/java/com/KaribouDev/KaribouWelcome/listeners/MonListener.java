@@ -1,7 +1,5 @@
 package com.KaribouDev.KaribouWelcome.listeners;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,15 +19,14 @@ public class MonListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        // Custom join message using Adventure API
-        event.joinMessage(
-                Component.text("Welcome " + player.getName() + "!")
-                        .color(NamedTextColor.GREEN)
-        );
-
-        // Send rules to the player if they haven't played before
         if (!player.hasPlayedBefore()) {
-            plugin.sendConfigMessage(player, "rules");
+            event.joinMessage(plugin.getConfigMessage(player, "public.new-player"));
+
+            plugin.sendConfigMessages(player, "private.welcome");
+            plugin.sendConfigMessages(player, "private.rules");
+
+        } else {
+            event.joinMessage(plugin.getConfigMessage(player, "public.login"));
         }
     }
 }

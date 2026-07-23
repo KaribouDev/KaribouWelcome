@@ -1,18 +1,20 @@
-welcome:
-  - "&6Welcome to the server, &7%player%&6!"
-  - "&7We hope you enjoy your stay."
-  - "&7You can see the rules at any moment with /rule."
+public:
+  new-player:
+    - "&e%player% joined the server for the first time!"
 
-all-new-player-message:
-  - "&6Welcome back, &7%player%&6!"
+  login:
+    - "&6Welcome back, &7%player%&6!"
 
-all-login-message:
-  - "&6Welcome back, &7%player%&6!"
+private:
+  welcome:
+    - "&6Welcome to the server, &7%player%&6!"
+    - "&7We hope you enjoy your stay."
+    - "&7You can see the rules at any moment with /rule."
 
-rules:
-  - "&6========== Rules =========="
-  - "&71. Respect other players."
-  - "&72. No cheating."
-  - "&73. No griefing."
-  - "&74. Have fun!"
-  - "&6==========================="
+  rules:
+    - "&6========== Rules =========="
+    - "&71. Respect other players."
+    - "&72. No cheating."
+    - "&73. No griefing."
+    - "&74. Have fun!"
+    - "&6==========================="
