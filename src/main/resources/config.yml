@@ -1,9 +1,6 @@
 public:
-  new-player:
-    - "&e%player% joined the server for the first time!"
-
-  login:
-    - "&6Welcome back, &7%player%&6!"
+  new-player: "&e%player% joined the server for the first time!"
+  login: "&6Welcome back, &7%player%&6!"
 
 private:
   welcome:

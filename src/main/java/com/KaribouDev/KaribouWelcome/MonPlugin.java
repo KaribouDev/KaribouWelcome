@@ -8,7 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.KaribouDev.KaribouWelcome.listeners.MonListener;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 /**
 * Main plugin class. 
@@ -16,6 +16,8 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 * and onDisable() on server shutdown. 
 */
 public final class MonPlugin extends JavaPlugin {
+
+    private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     @Override
     public void onEnable() {
@@ -38,25 +40,26 @@ public final class MonPlugin extends JavaPlugin {
             line = line.replace("%player%", player.getName());
 
             player.sendMessage(
-                LegacyComponentSerializer.legacyAmpersand().deserialize(line)
+                miniMessage.deserialize(line)
             );
         }
     }
+
     public Component getConfigMessage(Player player, String path) {
         String line = getConfig().getString(path, "");
         line = line.replace("%player%", player.getName());
 
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(line);
+        return miniMessage.deserialize(line);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         // Commande /rule
-        if (command.getName().equalsIgnoreCase("rule")) {
+        if (command.getName().equalsIgnoreCase("rules")) {
 
             if (sender instanceof Player player) {
-                sendConfigMessages(player, "rules");
+                sendConfigMessages(player, "private.rules");
             } else {
                 sender.sendMessage("This command must be executed by a player.");
             }
