@@ -1,12 +1,13 @@
-package com.MoustafaKaribou.KaribouWelcome.listeners;
+package com.KaribouDev.KaribouWelcome.listeners;
 
-import com.MoustafaKaribou.KaribouWelcome.MonPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+
+import com.KaribouDev.KaribouWelcome.MonPlugin;
 
 public class MonListener implements Listener {
 
