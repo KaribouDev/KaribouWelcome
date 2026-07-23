@@ -20,11 +20,13 @@ public class MonListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        // Custom join message using Adventure API
         event.joinMessage(
                 Component.text("Welcome " + player.getName() + "!")
                         .color(NamedTextColor.GREEN)
         );
 
+        // Send rules to the player if they haven't played before
         if (!player.hasPlayedBefore()) {
             plugin.sendRules(player);
         }

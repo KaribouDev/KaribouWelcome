@@ -11,20 +11,20 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 /**
- * Classe principale du plugin.
- * C'est le point d'entrée : Bukkit/Paper appelle onEnable() au démarrage
- * et onDisable() à l'arrêt du serveur.
- */
+* Main plugin class. 
+* Paper calls onEnable() on startup
+* and onDisable() on server shutdown. 
+*/
 public final class MonPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Message affiché dans la console au démarrage du plugin
+        // Message displayed in the console when the plugin starts up
         getLogger().info("Welcomer has been successfully activated !");
         
         saveDefaultConfig(); // Charge/crée config.yml
 
-        // Enregistrement de l'écouteur d'événements (voir MonListener.java)
+        // Registering the MonListener.java event listener
         getServer().getPluginManager().registerEvents(new MonListener(this), this);
     }
 

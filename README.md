@@ -42,8 +42,8 @@ rules:
 - [x] Welcome message
 - [x] Rules command
 - [x] Configurable rules
-- [ ] Permissions
-- [ ] Reload command
+- [x] Reload command
+- [x] Permissions
 - [ ] Custom join messages in config
 
 ## License
