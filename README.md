@@ -1,13 +1,17 @@
 # KaribouWelcome
 
-A simple Paper plugin that welcomes players and automatically displays the server rules to new players.
+A simple and customizable Paper plugin that manages player welcome messages, join messages, and server rules.
 
 ## Features
 
-- 👋 Displays a custom welcome message when a player joins.
-- 📜 Sends the server rules to players on their first login.
-- 📝 `/rule` command to display the rules again at any time.
-- ⚙️ Rules adn the welcome message are configurable through `config.yml`.
+- Custom first join messages.
+- Custom returning player messages.
+- Custom public join messages.
+- Automatically sends rules to new players.
+- `/rule` command to display rules.
+- Configurable messages with `config.yml`.
+- Reload configuration without restarting.
+- MiniMessage support for colors and text styles.
 
 ## Compatibility
 
@@ -16,38 +20,74 @@ A simple Paper plugin that welcomes players and automatically displays the serve
 
 ## Installation
 
-1. Download the plugin.
-2. Place the `.jar` file into your server's `plugins` folder.
-3. Start or restart the server.
+1. Download the `.jar` file.
+2. Put it into your server's `plugins` folder.
+3. Start the server.
+4. Edit `plugins/KaribouWelcome/config.yml`.
+5. Use `/karibouwelcome reload`.
 
-## Command
+## Commands
 
-| Command | Description |
-|---------|-------------|
-| `/rule` | Displays the server rules. |
-| `/karibouwelcome reload` | Reload the plugin with te new config file. |
+| Command | Description | Permissions |
+|---------|-------------|-------------|
+| `/rule` | Displays the server rules. | Player |
+| `/karibouwelcome reload` | Reloads the configuration. | OP |
 
 ## Configuration
+
+Messages are configured in:
+
+```
+plugins/KaribouWelcome/config.yml
+```
 
 Example:
 
 ```yaml
-rules:
-  - "&6Welcome to the server!"
-  - "&7Please respect other players."
-  - "&aHave fun!"
+public:
+  new-player: "<gold><bold>%player%</bold> joined for the first time!"
+  login: "<green>%player% joined the server."
+
+private:
+  welcome:
+    - "<gold>Welcome <yellow>%player%</yellow>!"
+    - "<gray>Enjoy your stay."
+
+  rules:
+    - "<gold>========== Rules =========="
+    - "<white>1. Respect other players."
+    - "<white>2. No cheating."
+    - "<white>3. Have fun!"
+    - "<gold>==========================="
+```
+
+## Formatting
+
+KaribouWelcome uses MiniMessage formatting.
+
+Examples:
+
+```
+<red>Red text
+<gold><bold>Important message
+<#55FF55>Custom color
+<gradient:#ff0000:#ffff00>Gradient
+```
+
+Available variable:
+
+```
+%player%
 ```
 
 ## Roadmap
 
-- [x] Welcome message
-- [x] Rules command
-- [x] Configurable rules
+- [x] Welcome messages
+- [x] Join messages
+- [x] Rules system
 - [x] Reload command
 - [x] Permissions
-- [x] Custom join messages in config
-- [x] Documentation of the config file
-- [ ] Adding PlaceholderAPI support
+- [x] MiniMessage support
 
 ## License
 
