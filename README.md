@@ -45,8 +45,9 @@ rules:
 - [x] Configurable rules
 - [x] Reload command
 - [x] Permissions
-- [ ] Custom join messages in config
-- [ ] Documentation of the config file
+- [x] Custom join messages in config
+- [x] Documentation of the config file
+- [ ] Adding PlaceholderAPI support
 
 ## License
 
