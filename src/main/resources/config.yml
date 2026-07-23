@@ -1,9 +1,12 @@
 welcome:
   - "&6Welcome to the server, &7%player%&6!"
   - "&7We hope you enjoy your stay."
-  - "&7Please read the rules with /rule."
+  - "&7You can see the rules at any moment with /rule."
 
-login-message:
+all-new-player-message:
+  - "&6Welcome back, &7%player%&6!"
+
+all-login-message:
   - "&6Welcome back, &7%player%&6!"
 
 rules:

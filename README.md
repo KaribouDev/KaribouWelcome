@@ -46,6 +46,7 @@ rules:
 - [x] Reload command
 - [x] Permissions
 - [ ] Custom join messages in config
+- [ ] Documentation of the config file
 
 ## License
 
