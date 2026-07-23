@@ -20,9 +20,9 @@ public final class MonPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         // Message displayed in the console when the plugin starts up
-        getLogger().info("Welcomer has been successfully activated !");
+        getLogger().info("KaribouWelcome has been successfully activated.");
         
-        saveDefaultConfig(); // Charge/crée config.yml
+        saveDefaultConfig(); // Load/create config.yml
 
         // Registering the MonListener.java event listener
         getServer().getPluginManager().registerEvents(new MonListener(this), this);
@@ -30,16 +30,18 @@ public final class MonPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getLogger().info("Welcomer has been deactivated.");
+        getLogger().info("KaribouWelcome has been deactivated.");
     }
 
-    public void sendRules(Player player) {
-    for (String line : getConfig().getStringList("rules")) {
-        player.sendMessage(
-            LegacyComponentSerializer.legacyAmpersand().deserialize(line)
-        );
+    public void sendConfigMessage(Player player, String path) {
+        for (String line : getConfig().getStringList(path)) {
+            line = line.replace("%player%", player.getName());
+
+            player.sendMessage(
+                LegacyComponentSerializer.legacyAmpersand().deserialize(line)
+            );
+        }
     }
-}
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -48,7 +50,7 @@ public final class MonPlugin extends JavaPlugin {
         if (command.getName().equalsIgnoreCase("rule")) {
 
             if (sender instanceof Player player) {
-                sendRules(player);
+                sendConfigMessage(player, "rules");
             } else {
                 sender.sendMessage("This command must be executed by a player.");
             }

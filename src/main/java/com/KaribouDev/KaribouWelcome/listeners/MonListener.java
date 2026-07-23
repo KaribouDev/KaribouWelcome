@@ -29,7 +29,7 @@ public class MonListener implements Listener {
 
         // Send rules to the player if they haven't played before
         if (!player.hasPlayedBefore()) {
-            plugin.sendRules(player);
+            plugin.sendConfigMessage(player, "rules");
         }
     }
 }
