@@ -1,6 +1,6 @@
 name: Welcomer
 version: "${project.version}"
-main: com.MoustafaKaribou.welcomer.MonPlugin
+main: com.KaribouDev.welcomer.MonPlugin
 api-version: "26.1.2"
 author: MoustafaKaribou
 description: A plugin that allows sending a welcome message to each player, and a code of conduct message for new players.
