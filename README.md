@@ -7,12 +7,12 @@ A simple Paper plugin that welcomes players and automatically displays the serve
 - 👋 Displays a custom welcome message when a player joins.
 - 📜 Sends the server rules to players on their first login.
 - 📝 `/rule` command to display the rules again at any time.
-- ⚙️ Rules are configurable through `config.yml`.
+- ⚙️ Rules adn the welcome message are configurable through `config.yml`.
 
 ## Compatibility
 
 - Paper
-- Java 21
+- Java 25
 
 ## Installation
 
@@ -25,6 +25,7 @@ A simple Paper plugin that welcomes players and automatically displays the serve
 | Command | Description |
 |---------|-------------|
 | `/rule` | Displays the server rules. |
+| `/karibouwelcome reload` | Reload the plugin with te new config file. |
 
 ## Configuration
 
