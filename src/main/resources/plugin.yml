@@ -5,7 +5,7 @@ api-version: "26.1.2"
 author: MoustafaKaribou
 description: A plugin that allows sending a welcome message to each player, and a code of conduct message for new players.
 
-# Déclaration des commandes (doit correspondre au code Java)
+# commands declaration
 commands:
   rules:
     description: Send the rule of the server to the player.
@@ -15,7 +15,7 @@ commands:
     description: Reload the plugin configuration.
     usage: /karibouwelcome reload
 
-# Déclaration des permissions (optionnel, exemple)
+# Declaration of authorizations
 permissions:
   Welcomer.rules:
     description: Allows the use of the /rules command.
