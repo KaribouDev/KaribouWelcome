@@ -8,7 +8,7 @@ A simple and customizable Paper plugin that manages player welcome messages, joi
 - Custom returning player messages.
 - Custom public join messages.
 - Automatically sends rules to new players.
-- `/rule` command to display rules.
+- `/rules` command to display rules.
 - Configurable messages with `config.yml`.
 - Reload configuration without restarting.
 - MiniMessage support for colors and text styles.
@@ -30,7 +30,7 @@ A simple and customizable Paper plugin that manages player welcome messages, joi
 
 | Command | Description | Permissions |
 |---------|-------------|-------------|
-| `/rule` | Displays the server rules. | Player |
+| `/rules` | Displays the server rules. | Player |
 | `/karibouwelcome reload` | Reloads the configuration. | OP |
 
 ## Configuration
