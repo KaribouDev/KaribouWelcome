@@ -32,9 +32,9 @@ private:
   welcome:
     - "<gold>Welcome to the server, <yellow>%player%</yellow><gold>!"
     - "<gray>We hope you enjoy your stay."
-    - "<gray>Use <yellow>/rule</yellow> to read the rules again."
+    - "<gray>Use <yellow>/rules</yellow> to read the rules again."
 
-  # Rules displayed with /rule
+  # Rules displayed with /rules
   rules:
     - "<gold>========== Rules =========="
     - "<white>1. Respect other players."

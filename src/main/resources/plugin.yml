@@ -1,23 +1,22 @@
-name: Welcomer
+name: KaribouWelcome
 version: "${project.version}"
 main: com.KaribouDev.KaribouWelcome.MonPlugin
 api-version: "26.1.2"
 author: MoustafaKaribou
 description: A plugin that allows sending a welcome message to each player, and a code of conduct message for new players.
 
-# commands declaration
 commands:
   rules:
-    description: Send the rule of the server to the player.
+    description: Send the rules of the server to the player.
     usage: /rules
+    permission: karibouwelcome.rules
 
-  karibouwelcome reload:
-    description: Reload the plugin configuration.
+  karibouwelcome:
+    description: Manage KaribouWelcome.
     usage: /karibouwelcome reload
 
-# Declaration of authorizations
 permissions:
-  Welcomer.rules:
+  karibouwelcome.rules:
     description: Allows the use of the /rules command.
     default: true
 
