@@ -13,7 +13,7 @@ commands:
 
   karibouwelcome:
     description: Manage KaribouWelcome.
-    usage: /karibouwelcome reload
+    usage: /karibouwelcome <reload|test>
 
 permissions:
   karibouwelcome.rules:
@@ -22,4 +22,8 @@ permissions:
 
   karibouwelcome.reload:
     description: Allows reloading the plugin configuration.
+    default: op
+
+  karibouwelcome.test:
+    description: Test configured messages.
     default: op

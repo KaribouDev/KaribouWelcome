@@ -52,6 +52,10 @@ public final class MonPlugin extends JavaPlugin {
         return miniMessage.deserialize(line);
     }
 
+    private void sendPublicMessage(String path, Player player) {
+        player.sendMessage(getConfigMessage(player, path));
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -73,19 +77,41 @@ public final class MonPlugin extends JavaPlugin {
             if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
 
                 if (!sender.hasPermission("karibouwelcome.reload")) {
-                    sender.sendMessage(
-                        Component.text("You don't have permission.")
-                    );
+                    sender.sendMessage(Component.text("You don't have permission."));
                     return true;
                 }
 
                 reloadConfig();
-
-                sender.sendMessage(
-                    Component.text("Configuration reloaded.")
-                );
+                sender.sendMessage(Component.text("Configuration reloaded."));
                 return true;
             }
+
+            if (args.length == 2 && args[0].equalsIgnoreCase("test")) {
+
+                if (!(sender instanceof Player player)) {
+                    sender.sendMessage("This command must be executed by a player.");
+                    return true;
+                }
+
+                if (!player.hasPermission("karibouwelcome.test")) {
+                    player.sendMessage(Component.text("You don't have permission."));
+                    return true;
+                }
+
+                switch (args[1].toLowerCase()) {
+                    case "join" -> sendPublicMessage("public.login", player);
+                    case "quit" -> sendPublicMessage("public.quit", player);
+                    case "newplayer" -> sendPublicMessage("public.new-player", player);
+                    case "welcome" -> sendConfigMessages(player, "private.welcome");
+                    case "rules" -> sendConfigMessages(player, "private.rules");
+                    default -> player.sendMessage(Component.text(
+                            "Usage: /karibouwelcome test <join|quit|newplayer|welcome|rules>"
+                    ));
+                }
+
+                return true;
+            }
+
             return true;
         }
         return false;
