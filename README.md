@@ -15,6 +15,7 @@ A simple and customizable Paper plugin that manages player welcome messages, joi
 - Admin test commands to preview configured messages.
 - Permission-based command access.
 - MiniMessage support for colors and text styles.
+- Tab completion support for plugin commands.
 
 ## Compatibility
 
@@ -36,8 +37,8 @@ A simple and customizable Paper plugin that manages player welcome messages, joi
 | Command | Description | Permissions |
 |---------|-------------|-------------|
 | `/rules` | Displays the server rules. | Player |
-| `/karibouwelcome reload` | Reloads the configuration. | OP |
-| `/karibouwelcome test <type>` | Tests configured messages. | OP |
+| `/karibouwelcome reload` | Reloads the configuration. | Admin |
+| `/karibouwelcome test <type>` | Tests configured messages. | Admin |
 
 Available test types:
 - `join`
@@ -117,6 +118,7 @@ The `%player%` variable is replaced automatically with the player's name.
 - [x] Quit messages
 - [x] Configurable messages with config.yml
 - [x] Test commands for message previews
+- [x] Command tab completion
 
 ## License
 
