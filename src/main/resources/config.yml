@@ -21,10 +21,13 @@
 public:
 
   # Message shown to everyone when a player joins
-  login: "<green>%player% joined the server."
+  login: "<green>%player% joined the server.</green>"
 
   # Message shown to everyone when a player joins for the first time
-  new-player: "<gold><bold>%player%</bold> joined the server for the first time!"
+  new-player: "<gold><bold>%player%</bold> joined the server for the first time!</gold>"
+
+  # Message shown to everyone when a player leaves
+  quit: "<yellow>%player% left the server.</yellow>"
 
 private:
 
