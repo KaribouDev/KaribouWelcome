@@ -5,19 +5,22 @@ A simple and customizable Paper plugin that manages player welcome messages, joi
 ## Features
 
 - Custom first join messages.
-- Custom returning player messages.
+- Custom returning player join messages.
 - Custom public join messages.
 - Custom public quit messages.
-- Automatically sends rules to new players.
-- `/rules` command to display rules.
+- Automatically sends welcome messages to new players.
+- Automatically displays rules with the `/rules` command.
 - Configurable messages with `config.yml`.
-- Reload configuration without restarting.
+- Reload configuration without restarting the server.
+- Admin test commands to preview configured messages.
+- Permission-based command access.
 - MiniMessage support for colors and text styles.
 
 ## Compatibility
 
 - Paper
 - Java 25
+- MiniMessage (Adventure API)
 
 ## Installation
 
@@ -25,7 +28,8 @@ A simple and customizable Paper plugin that manages player welcome messages, joi
 2. Put it into your server's `plugins` folder.
 3. Start the server.
 4. Edit `plugins/KaribouWelcome/config.yml`.
-5. Use `/karibouwelcome reload`.
+5. Use `/karibouwelcome reload` to apply configuration changes.
+6. Use `/karibouwelcome test <type>` to preview messages.
 
 ## Commands
 
@@ -33,6 +37,14 @@ A simple and customizable Paper plugin that manages player welcome messages, joi
 |---------|-------------|-------------|
 | `/rules` | Displays the server rules. | Player |
 | `/karibouwelcome reload` | Reloads the configuration. | OP |
+| `/karibouwelcome test <type>` | Tests configured messages. | OP |
+
+Available test types:
+- `join`
+- `quit`
+- `newplayer`
+- `welcome`
+- `rules`
 
 ## Configuration
 
@@ -90,18 +102,21 @@ Examples:
 Available variable:
 
 ```
-%player%
+The `%player%` variable is replaced automatically with the player's name.
 ```
 
 ## Roadmap
 
 - [x] Welcome messages
 - [x] Join messages
+- [x] First join messages
 - [x] Rules system
 - [x] Reload command
-- [x] Permissions
+- [x] Permissions system
 - [x] MiniMessage support
 - [x] Quit messages
+- [x] Configurable messages with config.yml
+- [x] Test commands for message previews
 
 ## License
 
