@@ -28,6 +28,9 @@ public final class MonPlugin extends JavaPlugin {
 
         // Registering the MonListener.java event listener
         getServer().getPluginManager().registerEvents(new MonListener(this), this);
+
+        // Registering the command executor and tab completer for /karibouwelcome
+        getCommand("karibouwelcome").setTabCompleter(new MonTabCompleter());
     }
 
     @Override
