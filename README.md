@@ -7,6 +7,7 @@ A simple and customizable Paper plugin that manages player welcome messages, joi
 - Custom first join messages.
 - Custom returning player messages.
 - Custom public join messages.
+- Custom public quit messages.
 - Automatically sends rules to new players.
 - `/rules` command to display rules.
 - Configurable messages with `config.yml`.
@@ -45,19 +46,31 @@ Example:
 
 ```yaml
 public:
-  new-player: "<gold><bold>%player%</bold> joined for the first time!"
-  login: "<green>%player% joined the server."
+
+  # Message shown to everyone when a player joins
+  login: "<green>%player% joined the server.</green>"
+
+  # Message shown to everyone when a player joins for the first time
+  new-player: "<gold><bold>%player%</bold> joined the server for the first time!</gold>"
+
+  # Message shown to everyone when a player leaves
+  quit: "<yellow>%player% left the server.</yellow>"
 
 private:
-  welcome:
-    - "<gold>Welcome <yellow>%player%</yellow>!"
-    - "<gray>Enjoy your stay."
 
+  # Sent only to new players
+  welcome:
+    - "<gold>Welcome to the server, <yellow>%player%</yellow><gold>!"
+    - "<gray>We hope you enjoy your stay."
+    - "<gray>Use <yellow>/rules</yellow> to read the rules again."
+
+  # Rules displayed with /rules
   rules:
     - "<gold>========== Rules =========="
     - "<white>1. Respect other players."
     - "<white>2. No cheating."
-    - "<white>3. Have fun!"
+    - "<white>3. No griefing."
+    - "<white>4. Have fun!"
     - "<gold>==========================="
 ```
 
@@ -88,6 +101,7 @@ Available variable:
 - [x] Reload command
 - [x] Permissions
 - [x] MiniMessage support
+- [x] Quit messages
 
 ## License
 
