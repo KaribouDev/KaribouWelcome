@@ -6,13 +6,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.KaribouDev.KaribouWelcome.MonPlugin;
+import com.KaribouDev.KaribouWelcome.karibouWelcome;
 
-public class MonListener implements Listener {
+public class EventListener implements Listener {
 
-    private final MonPlugin plugin;
+    private final karibouWelcome plugin;
 
-    public MonListener(MonPlugin plugin) {
+    public EventListener(karibouWelcome plugin) {
         this.plugin = plugin;
     }
 

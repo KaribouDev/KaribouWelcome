@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.KaribouDev.KaribouWelcome.listeners.MonListener;
+import com.KaribouDev.KaribouWelcome.listeners.EventListener;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -15,7 +15,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 * Paper calls onEnable() on startup
 * and onDisable() on server shutdown. 
 */
-public final class MonPlugin extends JavaPlugin {
+public final class karibouWelcome extends JavaPlugin {
 
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
@@ -27,7 +27,7 @@ public final class MonPlugin extends JavaPlugin {
         saveDefaultConfig(); // Load/create config.yml
 
         // Registering the MonListener.java event listener
-        getServer().getPluginManager().registerEvents(new MonListener(this), this);
+        getServer().getPluginManager().registerEvents(new EventListener(this), this);
 
         // Registering the command executor and tab completer for /karibouwelcome
         getCommand("karibouwelcome").setTabCompleter(new MonTabCompleter());
