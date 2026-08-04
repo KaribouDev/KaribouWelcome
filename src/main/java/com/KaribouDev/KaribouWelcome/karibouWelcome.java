@@ -15,7 +15,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 * Paper calls onEnable() on startup
 * and onDisable() on server shutdown. 
 */
-public final class KaribouWelcome extends JavaPlugin {
+public final class karibouWelcome extends JavaPlugin {
 
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
 

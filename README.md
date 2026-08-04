@@ -61,7 +61,6 @@ Example:
 
 ```yaml
 public:
-
   # Message shown to everyone when a player joins
   login: "<green>%player% joined the server.</green>"
 
@@ -72,7 +71,6 @@ public:
   quit: "<yellow>%player% left the server.</yellow>"
 
 private:
-
   # Sent only to new players
   welcome:
     - "<gold>Welcome to the server, <yellow>%player%</yellow><gold>!"
