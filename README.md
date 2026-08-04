@@ -34,11 +34,13 @@ A simple and customizable Paper plugin that manages player welcome messages, joi
 
 ## Commands
 
+Both `/karibouwelcome` and `/kbw` can be used to manage the plugin.
+
 | Command | Description | Permissions |
 |---------|-------------|-------------|
 | `/rules` | Displays the server rules. | Player |
-| `/karibouwelcome reload` | Reloads the configuration. | Admin |
-| `/karibouwelcome test <type>` | Tests configured messages. | Admin |
+| `/karibouwelcome reload` / `/kbw reload` | Reloads the configuration. | Admin |
+| `/karibouwelcome test <type>` / `/kbw test <type>` | Tests configured messages. | Admin |
 
 Available test types:
 - `join`
