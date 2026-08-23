@@ -106,7 +106,11 @@ jobs:
           git config user.email "ci@karibou.dev"
           git config user.name "Gitea CI"
 
-          git tag -a "$TAG" -m "Release $TAG"
+          if git tag -l "$TAG" | grep -q .; then
+            echo "Tag $TAG already exists locally, skipping creation"
+          else
+            git tag -a "$TAG" -m "Release $TAG"
+          fi
 
           echo "Push the $TAG tag to Gitea..."
           git -c http.extraHeader="Authorization: token $GIT_LOCAL_TOKEN" \
