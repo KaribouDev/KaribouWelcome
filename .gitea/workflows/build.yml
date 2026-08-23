@@ -40,6 +40,9 @@ jobs:
             "$INTERNAL_GIT_URL/$REPOSITORY.git" \
             .
 
+      - name: Install jq
+        run: apt-get update && apt-get install -y jq
+
       # ============================================================
       # VERSION
       # ============================================================
