@@ -40,9 +40,6 @@ jobs:
             "$INTERNAL_GIT_URL/$REPOSITORY.git" \
             .
 
-      - name: Install jq
-        run: apt-get update && apt-get install -y jq
-
       # ============================================================
       # VERSION
       # ============================================================
@@ -74,6 +71,9 @@ jobs:
       # ============================================================
       # BUILD AND PACKAGE
       # ============================================================
+      - name: Install jq
+        run: apt-get update && apt-get install -y jq
+
       - name: Build jar
         if: steps.check.outputs.should_release == 'true'
         run: mvn -B clean package
