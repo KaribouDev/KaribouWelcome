@@ -11,6 +11,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     container:
       image: maven:3.9-eclipse-temurin-25
@@ -27,17 +28,28 @@ jobs:
         run: |
           set -e
           if [ -z "$INTERNAL_GIT_URL" ]; then
-            echo "ERREUR: INTERNAL_GIT_URL n'est pas défini"
+            echo "ERROR: INTERNAL_GIT_URL not defined"
             exit 1
           fi
           if [ -z "$GIT_LOCAL_TOKEN" ]; then
-            echo "ERREUR: GIT_LOCAL_TOKEN n'est pas défini"
+            echo "ERROR: GIT_LOCAL_TOKEN not defined"
             exit 1
           fi
           git -c http.extraHeader="Authorization: token $GIT_LOCAL_TOKEN" \
             clone \
             "$INTERNAL_GIT_URL/$REPOSITORY.git" \
             .
+
+      # ============================================================
+      # CACHE MAVEN PACKAGES
+      # ============================================================
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
       # ============================================================
       # VERSION
@@ -70,26 +82,19 @@ jobs:
             -c http.extraHeader="Authorization: token $GIT_LOCAL_TOKEN" \
             "$GIT_URL" \
             "refs/tags/$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG existe déjà, version inchangée, pas de build/release"
+            echo "Tag $TAG already exists, version unchanged, no build/release."
             echo "should_release=false" >> "$GITHUB_OUTPUT"
           else
-            echo "Tag $TAG absent, nouvelle version detectee"
+            echo "Tag $TAG missing, new version detected"
             echo "should_release=true" >> "$GITHUB_OUTPUT"
           fi
 
       # ============================================================
-      # VERIFY
-      # ============================================================
-      - name: Verify
-        if: steps.check.outputs.should_release == 'true'
-        run: mvn -B clean verify
-
-      # ============================================================
-      # BUILD
+      # BUILD AND PACKAGE
       # ============================================================
       - name: Build jar
         if: steps.check.outputs.should_release == 'true'
-        run: mvn -B package
+        run: mvn -B clean package
 
       # ============================================================
       # CREATE TAG
@@ -111,10 +116,10 @@ jobs:
 
           git tag -a "$TAG" -m "Release $TAG"
 
-          echo "Push du tag $TAG vers Gitea..."
+          echo "Push the $TAG tag to Gitea..."
           git -c http.extraHeader="Authorization: token $GIT_LOCAL_TOKEN" \
             push "$GIT_URL" "$TAG"
-          echo "Tag $TAG poussé"
+          echo "Tag $TAG pushed"
 
       # ============================================================
       # VERIFY REMOTE TAG
@@ -135,9 +140,9 @@ jobs:
             ls-remote --exit-code --tags \
             "$GIT_URL" \
             "refs/tags/$TAG" >/dev/null 2>&1; then
-            echo "✅ Tag $TAG présent sur Gitea"
+            echo "Tag $TAG available on Gitea"
           else
-            echo "❌ Tag $TAG absent de Gitea"
+            echo "Tag $TAG missing from Gitea"
             exit 1
           fi
 
@@ -159,23 +164,24 @@ jobs:
             "$INTERNAL_GIT_URL/api/v1/repos/$REPOSITORY/releases" \
             -H "Authorization: token $GIT_LOCAL_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"tag_name\":\"$TAG\",\"name\":\"KaribouPrefix $TAG\"}")
+            -d "{\"tag_name\":\"$TAG\",\"name\":\"KaribouWelcome $TAG\"}")
 
-          RELEASE_ID=$(echo "$RESPONSE" | grep -o '"id":[0-9]*' | head -1 | cut -d: -f2)
+          RELEASE_ID=$(echo "$RESPONSE" | jq -r '.id')
 
           if [ -z "$RELEASE_ID" ]; then
-            echo "ERREUR: impossible de créer la release"
+            echo "ERROR: Unable to create the release"
             echo "$RESPONSE"
             exit 1
           fi
 
-          echo "Release créée : $TAG"
+          echo "Release created : $TAG"
           for JAR in target/*.jar; do
             echo "Upload : $(basename "$JAR")"
-            curl -sS -X POST \
+            curl -sS -f -X POST \
               "$INTERNAL_GIT_URL/api/v1/repos/$REPOSITORY/releases/$RELEASE_ID/assets" \
               -H "Authorization: token $GIT_LOCAL_TOKEN" \
-              -F "attachment=@$JAR"
+              -F "attachment=@$JAR" \
+              || { echo "Failed to upload $JAR"; exit 1; }
           done
 
       # ============================================================
@@ -197,13 +203,14 @@ jobs:
             -H "Authorization: token $GIT_LOCAL_TOKEN" \
             "$INTERNAL_GIT_URL/api/v1/repos/$REPOSITORY")
 
-          PRIVATE=$(echo "$RESPONSE" | grep -o '"private":[^,]*' | head -1 | cut -d: -f2)
+          RELEASE_ID=$(echo "$RESPONSE" | jq -r '.id')
+          PRIVATE=$(echo "$RESPONSE" | jq -r '.private')
 
           if [ "$PRIVATE" = "false" ]; then
-            echo "Repository public : synchronisation GitHub"
+            echo "Public repository: GitHub synchronization"
 
             if [ -z "$GIT_REMOTE_TOKEN" ]; then
-              echo "❌ GIT_REMOTE_TOKEN est absent"
+              echo "GIT_REMOTE_TOKEN is missing"
               exit 1
             fi
 
@@ -213,36 +220,34 @@ jobs:
             git remote remove github 2>/dev/null || true
             git remote add github "$GITHUB_REPO"
 
-            git push github main
+            git push github main --force-with-lease
             git push github --tags
 
             GH_RELEASE_RESPONSE=$(curl -sS -X POST \
               "https://api.github.com/repos/KaribouDev/$REPO_NAME/releases" \
               -H "Authorization: Bearer $GIT_REMOTE_TOKEN" \
               -H "Accept: application/vnd.github+json" \
-              -d "{\"tag_name\":\"$TAG\",\"name\":\"KaribouPrefix $TAG\"}")
+              -d "{\"tag_name\":\"$TAG\",\"name\":\"KaribouWelcome $TAG\"}")
 
-            GH_RELEASE_ID=$(echo "$GH_RELEASE_RESPONSE" \
-              | grep -o '"id": *[0-9]*' \
-              | head -1 \
-              | grep -o '[0-9]*')
+              GH_RELEASE_ID=$(echo "$GH_RELEASE_RESPONSE" \
+                | jq -r '.id')
 
             if [ -z "$GH_RELEASE_ID" ]; then
-              echo "ERREUR: impossible de créer la release GitHub"
+              echo "ERROR: unable to create the GitHub release"
               echo "$GH_RELEASE_RESPONSE"
               exit 1
             fi
 
             for JAR in target/*.jar; do
               JAR_NAME=$(basename "$JAR")
-              curl -sS -X POST \
+              curl -sS -f -X POST \
                 "https://uploads.github.com/repos/KaribouDev/$REPO_NAME/releases/$GH_RELEASE_ID/assets?name=$JAR_NAME" \
                 -H "Authorization: Bearer $GIT_REMOTE_TOKEN" \
                 -H "Content-Type: application/java-archive" \
                 --data-binary "@$JAR"
             done
 
-            echo "✅ Synchronisation GitHub terminée"
+            echo "GitHub synchronization complete"
           else
-            echo "Repository privé : pas de synchronisation GitHub"
+            echo "Private repository: no GitHub synchronization"
           fi
