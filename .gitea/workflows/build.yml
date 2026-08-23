@@ -56,25 +56,15 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       # ============================================================
-      # CHECK IF VERSION ALREADY RELEASED
+      # CHECK IF TAG EXISTES
       # ============================================================
       - name: Check if tag exists
         id: check
-        env:
-          INTERNAL_GIT_URL: ${{ vars.INTERNAL_GIT_URL }}
-          GIT_LOCAL_TOKEN: ${{ secrets.GIT_LOCAL_TOKEN }}
-          REPOSITORY: ${{ github.repository }}
-          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          set -e
-          TAG="v$VERSION"
-          GIT_URL="$INTERNAL_GIT_URL/$REPOSITORY.git"
+          TAG="v$(mvn -q help:evaluate -Dexpression=project.version -DforceStdout)"
 
-          if git ls-remote --exit-code --tags \
-            -c http.extraHeader="Authorization: token $GIT_LOCAL_TOKEN" \
-            "$GIT_URL" \
-            "refs/tags/$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG already exists, version unchanged, no build/release."
+          if git tag -l "$TAG" | grep -q .; then
+            echo "Tag $TAG already exists, no build needed."
             echo "should_release=false" >> "$GITHUB_OUTPUT"
           else
             echo "Tag $TAG missing, new version detected"
