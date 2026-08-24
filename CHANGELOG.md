@@ -5,7 +5,7 @@ All notable changes to KaribouWelcome will be documented in this file.
 ## 1.6.1 - 2026-08-24
 
 
-[38535be](38535be5c888b453ad7c7477eeead91be5ef2e39)...[8a7fba2](8a7fba2bbaf61dd0fa8c47f749334e11d78b2943)
+[38535be](38535be5c888b453ad7c7477eeead91be5ef2e39)...[b112029](b1120290b475061e76aa924b8193e5eecdb8e0b4)
 
 ### Bug Fixes
 
@@ -62,6 +62,11 @@ All notable changes to KaribouWelcome will be documented in this file.
 - Update version to 1.6.1 and api-version to 26.1.2 in configuration files ([9fbae7a](9fbae7a70aa2d02b69274c493e8c95b8b88430ff))
 
 - Update changelog commit logic to prevent unnecessary commits and improve synchronization with GitHub ([8a7fba2](8a7fba2bbaf61dd0fa8c47f749334e11d78b2943))
+
+
+### Chores
+
+- Update changelog for v1.6.1 ([b112029](b1120290b475061e76aa924b8193e5eecdb8e0b4))
 
 
 ### Documentation
