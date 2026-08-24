@@ -176,31 +176,70 @@ jobs:
           set -e
           TAG="v$VERSION"
 
-          # Read the generated changelog as release body
-          RELEASE_BODY=$(cat CHANGELOG.md | jq -Rs .)
+          GIT_URL="$INTERNAL_GIT_URL/$REPOSITORY.git"
 
-          RESPONSE=$(curl -sS -X POST \
+          # Build and validate the JSON payload with jq.
+          # --rawfile safely escapes newlines and control characters.
+          jq -n \
+            --arg tag "$TAG" \
+            --arg name "KaribouWelcome $TAG" \
+            --rawfile body CHANGELOG.md \
+            '{tag_name: $tag, name: $name, body: $body}' \
+            > /tmp/release-payload.json
+          jq empty /tmp/release-payload.json
+
+          HTTP_STATUS=$(curl -sS -o /tmp/release-response.json -w "%{http_code}" -X POST \
             "$INTERNAL_GIT_URL/api/v1/repos/$REPOSITORY/releases" \
             -H "Authorization: token $GIT_LOCAL_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"tag_name\":\"$TAG\",\"name\":\"KaribouWelcome $TAG\",\"body\":$RELEASE_BODY}")
+            --data-binary @/tmp/release-payload.json)
 
-          RELEASE_ID=$(echo "$RESPONSE" | jq -r '.id')
-
-          if [ -z "$RELEASE_ID" ]; then
-            echo "ERROR: Unable to create the release"
-            echo "$RESPONSE"
+          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
+            echo "ERROR: Unable to create the release (HTTP $HTTP_STATUS)"
+            sed 's/[^[:print:]\t]//g' /tmp/release-response.json || true
             exit 1
           fi
 
+          RELEASE_ID=$(sed -n 's/.*"id"[[:space:]]*:[[:space:]]*\([0-9][0-9]*\).*/\1/p' /tmp/release-response.json | head -n 1)
+
+          if [ -z "$RELEASE_ID" ]; then
+            echo "ERROR: Gitea response does not contain a release ID"
+            sed 's/[^[:print:]\t]//g' /tmp/release-response.json || true
+            exit 1
+          fi
+
+          # Use the upload URL returned by Gitea when available.
+          UPLOAD_URL=$(grep -o '"upload_url"[[:space:]]*:[[:space:]]*"[^"]*"' /tmp/release-response.json \
+            | sed 's/.*"upload_url"[[:space:]]*:[[:space:]]*"//; s/"$//' \
+            | sed 's/{?name}/?name=/; s/{name}/?name=/')
+          if [ -z "$UPLOAD_URL" ]; then
+            UPLOAD_URL="$INTERNAL_GIT_URL/api/v1/repos/$REPOSITORY/releases/$RELEASE_ID/assets?name="
+          fi
+          echo "Upload endpoint: $UPLOAD_URL"
+
           echo "Release created : $TAG"
           for JAR in target/*.jar; do
-            echo "Upload : $(basename "$JAR")"
-            curl -sS -f -X POST \
-              "$INTERNAL_GIT_URL/api/v1/repos/$REPOSITORY/releases/$RELEASE_ID/assets" \
+            JAR_NAME=$(basename "$JAR")
+            echo "Upload : $JAR_NAME"
+
+            case "$UPLOAD_URL" in
+              *"?name="*) ASSET_URL="${UPLOAD_URL}${JAR_NAME}" ;;
+              *) ASSET_URL="${UPLOAD_URL}?name=${JAR_NAME}" ;;
+            esac
+
+            HTTP_STATUS=$(curl -sS -o /tmp/upload-response.json -w "%{http_code}" -X POST \
+              "$ASSET_URL" \
               -H "Authorization: token $GIT_LOCAL_TOKEN" \
-              -F "attachment=@$JAR" \
-              || { echo "Failed to upload $JAR"; exit 1; }
+              -H "Content-Type: application/octet-stream" \
+              --data-binary "@$JAR")
+
+            if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
+              echo "Failed to upload $JAR_NAME (HTTP $HTTP_STATUS)"
+              sed 's/[^[:print:]\t]//g' /tmp/upload-response.json || true
+              exit 1
+            fi
+
+            echo "Uploaded : $JAR_NAME"
           done
 
           # Commit the generated changelog back to the repo
