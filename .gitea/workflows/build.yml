@@ -138,9 +138,17 @@ jobs:
       - name: Install git-cliff
         if: steps.check.outputs.should_release == 'true'
         run: |
-          # Resolve the latest release download URL via GitHub API
+          # Detect architecture and download matching binary
+          ARCH=$(uname -m)
+          case "$ARCH" in
+            x86_64)  ASSET_PATTERN="x86_64-unknown-linux-gnu.tar.gz" ;;
+            aarch64) ASSET_PATTERN="aarch64-unknown-linux-gnu.tar.gz" ;;
+            *)       echo "Unsupported architecture: $ARCH"; exit 1 ;;
+          esac
+          echo "Architecture: $ARCH -> $ASSET_PATTERN"
+
           DOWNLOAD_URL=$(curl -sS "https://api.github.com/repos/orhun/git-cliff/releases/latest" \
-            | jq -r '.assets[] | select(.name | test("x86_64-unknown-linux-gnu.tar.gz$")) | .browser_download_url')
+            | jq -r --arg pat "$ASSET_PATTERN" '.assets[] | select(.name | endswith($pat)) | .browser_download_url')
           echo "Downloading: $DOWNLOAD_URL"
           curl -sSfL "$DOWNLOAD_URL" \
             | tar xz --wildcards -C /usr/local/bin --strip-components=1 '*/git-cliff'
