@@ -242,13 +242,19 @@ jobs:
             echo "Uploaded : $JAR_NAME"
           done
 
-          # Commit the generated changelog back to the repo
+          # Commit the generated changelog only when it actually changed.
+          # This commit may trigger another workflow run; that run exits
+          # at the tag check because the release tag already exists.
           git config user.email "ci@karibou.dev"
           git config user.name "Gitea CI"
           git add CHANGELOG.md
-          git diff --cached --quiet || git commit -m "chore: update changelog for $TAG"
-          git -c http.extraHeader="Authorization: token $GIT_LOCAL_TOKEN" \
-            push "$GIT_URL" main
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update changelog for $TAG"
+            git -c http.extraHeader="Authorization: token $GIT_LOCAL_TOKEN" \
+              push "$GIT_URL" main
+          else
+            echo "CHANGELOG.md unchanged; no commit needed"
+          fi
 
       # ============================================================
       # MIRROR TO GITHUB IF PUBLIC
@@ -286,8 +292,10 @@ jobs:
             git remote remove github 2>/dev/null || true
             git remote add github "$GITHUB_REPO"
 
-            git push github main --force-with-lease
-            git push github --tags
+            # Gitea is the source of truth; GitHub is a mirror.
+            # Force synchronization to avoid stale-info rejections.
+            git push github main --force
+            git push github --tags --force
 
             GH_RELEASE_RESPONSE=$(curl -sS -X POST \
               "https://api.github.com/repos/KaribouDev/$REPO_NAME/releases" \
