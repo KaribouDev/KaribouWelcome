@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 /**
  * Centralizes all config message logic with proper error handling.
@@ -14,7 +13,6 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 public final class MessageService {
 
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
-    private static final PlainTextComponentSerializer PLAIN = PlainTextComponentSerializer.plainText();
 
     private final KaribouWelcome plugin;
 

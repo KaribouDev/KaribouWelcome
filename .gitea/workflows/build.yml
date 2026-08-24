@@ -133,6 +133,24 @@ jobs:
           fi
 
       # ============================================================
+      # GENERATE CHANGELOG
+      # ============================================================
+      - name: Install git-cliff
+        if: steps.check.outputs.should_release == 'true'
+        run: |
+          curl -sSfL https://github.com/orhun/git-cliff/releases/latest/download/git-cliff-*-x86_64-unknown-linux-gnu.tar.gz \
+            | tar xz -C /usr/local/bin --strip-components=1 'git-cliff-*/git-cliff'
+          git-cliff --version
+
+      - name: Generate changelog
+        if: steps.check.outputs.should_release == 'true'
+        run: |
+          TAG="v$(mvn -q help:evaluate -Dexpression=project.version -DforceStdout)"
+          git-cliff --tag "$TAG" -o CHANGELOG.md
+          echo "=== CHANGELOG ==="
+          cat CHANGELOG.md
+
+      # ============================================================
       # CREATE GITEA RELEASE
       # ============================================================
       - name: Create Gitea release
@@ -146,11 +164,14 @@ jobs:
           set -e
           TAG="v$VERSION"
 
+          # Read the generated changelog as release body
+          RELEASE_BODY=$(cat CHANGELOG.md | jq -Rs .)
+
           RESPONSE=$(curl -sS -X POST \
             "$INTERNAL_GIT_URL/api/v1/repos/$REPOSITORY/releases" \
             -H "Authorization: token $GIT_LOCAL_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"tag_name\":\"$TAG\",\"name\":\"KaribouWelcome $TAG\"}")
+            -d "{\"tag_name\":\"$TAG\",\"name\":\"KaribouWelcome $TAG\",\"body\":$RELEASE_BODY}")
 
           RELEASE_ID=$(echo "$RESPONSE" | jq -r '.id')
 
@@ -169,6 +190,14 @@ jobs:
               -F "attachment=@$JAR" \
               || { echo "Failed to upload $JAR"; exit 1; }
           done
+
+          # Commit the generated changelog back to the repo
+          git config user.email "ci@karibou.dev"
+          git config user.name "Gitea CI"
+          git add CHANGELOG.md
+          git diff --cached --quiet || git commit -m "chore: update changelog for $TAG"
+          git -c http.extraHeader="Authorization: token $GIT_LOCAL_TOKEN" \
+            push "$GIT_URL" main
 
       # ============================================================
       # MIRROR TO GITHUB IF PUBLIC
