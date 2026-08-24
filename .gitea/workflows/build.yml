@@ -143,7 +143,7 @@ jobs:
             | jq -r '.assets[] | select(.name | test("x86_64-unknown-linux-gnu.tar.gz$")) | .browser_download_url')
           echo "Downloading: $DOWNLOAD_URL"
           curl -sSfL "$DOWNLOAD_URL" \
-            | tar xz -C /usr/local/bin --strip-components=1 'git-cliff-*/git-cliff'
+            | tar xz --wildcards -C /usr/local/bin --strip-components=1 '*/git-cliff'
           git-cliff --version
 
       - name: Generate changelog
