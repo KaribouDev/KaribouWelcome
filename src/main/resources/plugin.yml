@@ -1,7 +1,7 @@
 name: KaribouWelcome
 version: "${project.version}"
 main: com.KaribouDev.KaribouWelcome.KaribouWelcome
-api-version: "26.1.2"
+api-version: "1.21"
 author: MoustafaKaribou
 description: A plugin that allows sending a welcome message to each player, and a code of conduct message for new players.
 

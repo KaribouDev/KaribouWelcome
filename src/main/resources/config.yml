@@ -43,3 +43,16 @@ private:
     - "<white>3. No griefing."
     - "<white>4. Have fun!"
     - "<gold>==========================="
+
+# ============================================================
+# System messages (used by commands)
+# ============================================================
+errors:
+  # Message sent when a player lacks permission
+  no-permission: "<red>You don't have permission.</red>"
+
+  # Message sent when a command is executed from console but requires a player
+  player-only: "<red>This command must be executed by a player.</red>"
+
+  # Message sent after a successful config reload
+  config-reloaded: "<green>Configuration reloaded.</green>"

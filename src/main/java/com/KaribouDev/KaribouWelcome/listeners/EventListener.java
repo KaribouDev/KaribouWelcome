@@ -7,7 +7,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.KaribouDev.KaribouWelcome.KaribouWelcome;
+import com.KaribouDev.KaribouWelcome.MessageService;
 
+/**
+ * Listens for player join/quit events and sends configured messages.
+ */
 public class EventListener implements Listener {
 
     private final KaribouWelcome plugin;
@@ -19,25 +23,27 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        MessageService messages = plugin.getMessageService();
 
         if (!player.hasPlayedBefore()) {
             // Custom join message for new players
-            event.joinMessage(plugin.getConfigMessage(player, "public.new-player"));
+            event.joinMessage(messages.getConfigMessage(player, "public.new-player"));
 
             // Send welcome and rules messages to new players
-            plugin.sendConfigMessages(player, "private.welcome");
-            plugin.sendConfigMessages(player, "private.rules");
+            messages.sendConfigMessages(player, "private.welcome");
+            messages.sendConfigMessages(player, "private.rules");
 
         } else {
             // Custom join message for returning players
-            event.joinMessage(plugin.getConfigMessage(player, "public.login"));
+            event.joinMessage(messages.getConfigMessage(player, "public.login"));
         }
     }
+
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        
+
         // Custom quit message
-        event.quitMessage(plugin.getConfigMessage(player, "public.quit"));
+        event.quitMessage(plugin.getMessageService().getConfigMessage(player, "public.quit"));
     }
 }
