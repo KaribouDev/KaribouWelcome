@@ -158,9 +158,11 @@ jobs:
         if: steps.check.outputs.should_release == 'true'
         run: |
           TAG="v$(mvn -q help:evaluate -Dexpression=project.version -DforceStdout)"
-          git-cliff --tag "$TAG" -o CHANGELOG.md
-          echo "=== CHANGELOG ==="
-          cat CHANGELOG.md
+          # Generate the release notes only in a temporary file.
+          # CHANGELOG.md is intentionally not modified or committed.
+          git-cliff --tag "$TAG" -o /tmp/release-notes.md
+          echo "=== RELEASE NOTES ==="
+          cat /tmp/release-notes.md
 
       # ============================================================
       # CREATE GITEA RELEASE
@@ -183,7 +185,7 @@ jobs:
           jq -n \
             --arg tag "$TAG" \
             --arg name "KaribouWelcome $TAG" \
-            --rawfile body CHANGELOG.md \
+            --rawfile body /tmp/release-notes.md \
             '{tag_name: $tag, name: $name, body: $body}' \
             > /tmp/release-payload.json
           jq empty /tmp/release-payload.json
@@ -242,19 +244,8 @@ jobs:
             echo "Uploaded : $JAR_NAME"
           done
 
-          # Commit the generated changelog only when it actually changed.
-          # This commit may trigger another workflow run; that run exits
-          # at the tag check because the release tag already exists.
-          git config user.email "ci@karibou.dev"
-          git config user.name "Gitea CI"
-          git add CHANGELOG.md
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: update changelog for $TAG"
-            git -c http.extraHeader="Authorization: token $GIT_LOCAL_TOKEN" \
-              push "$GIT_URL" main
-          else
-            echo "CHANGELOG.md unchanged; no commit needed"
-          fi
+          # Release notes are intentionally kept only in the release body.
+          # Do not commit CHANGELOG.md: this avoids CI-generated merge commits.
 
       # ============================================================
       # MIRROR TO GITHUB IF PUBLIC
@@ -301,7 +292,10 @@ jobs:
               "https://api.github.com/repos/KaribouDev/$REPO_NAME/releases" \
               -H "Authorization: Bearer $GIT_REMOTE_TOKEN" \
               -H "Accept: application/vnd.github+json" \
-              -d "{\"tag_name\":\"$TAG\",\"name\":\"KaribouWelcome $TAG\"}")
+              -d "$(jq -n \
+                --arg tag "$TAG" \
+                --rawfile body /tmp/release-notes.md \
+                '{tag_name: $tag, name: ("KaribouWelcome " + $tag), body: $body}')")
 
               GH_RELEASE_ID=$(echo "$GH_RELEASE_RESPONSE" \
                 | jq -r '.id')
