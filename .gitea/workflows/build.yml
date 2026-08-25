@@ -288,31 +288,66 @@ jobs:
             git push github main --force
             git push github --tags --force
 
-            GH_RELEASE_RESPONSE=$(curl -sS -X POST \
+            # Build the JSON request in a file so multiline release notes
+            # are escaped by jq and never interpreted by the shell.
+            jq -n \
+              --arg tag "$TAG" \
+              --rawfile body /tmp/release-notes.md \
+              '{tag_name: $tag, name: ("KaribouWelcome " + $tag), body: $body}' \
+              > /tmp/github-release-payload.json
+
+            GH_HTTP_STATUS=$(curl -sS \
+              -o /tmp/github-release-response.json \
+              -w "%{http_code}" \
+              -X POST \
               "https://api.github.com/repos/KaribouDev/$REPO_NAME/releases" \
               -H "Authorization: Bearer $GIT_REMOTE_TOKEN" \
               -H "Accept: application/vnd.github+json" \
-              -d "$(jq -n \
-                --arg tag "$TAG" \
-                --rawfile body /tmp/release-notes.md \
-                '{tag_name: $tag, name: ("KaribouWelcome " + $tag), body: $body}')")
+              -H "Content-Type: application/json" \
+              --data-binary @/tmp/github-release-payload.json)
 
-              GH_RELEASE_ID=$(echo "$GH_RELEASE_RESPONSE" \
-                | jq -r '.id')
+            if [ "$GH_HTTP_STATUS" = "422" ]; then
+              echo "GitHub release $TAG already exists; reusing it"
+              GH_HTTP_STATUS=$(curl -sS \
+                -o /tmp/github-release-response.json \
+                -w "%{http_code}" \
+                -H "Authorization: Bearer $GIT_REMOTE_TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                "https://api.github.com/repos/KaribouDev/$REPO_NAME/releases/tags/$TAG")
+            fi
+
+            if [ "$GH_HTTP_STATUS" -lt 200 ] || [ "$GH_HTTP_STATUS" -ge 300 ]; then
+              echo "ERROR: unable to create or retrieve GitHub release (HTTP $GH_HTTP_STATUS)"
+              sed 's/[^[:print:]\t]//g' /tmp/github-release-response.json || true
+              exit 1
+            fi
+
+            GH_RELEASE_ID=$(sed -n 's/.*"id"[[:space:]]*:[[:space:]]*\([0-9][0-9]*\).*/\1/p' /tmp/github-release-response.json | head -n 1)
 
             if [ -z "$GH_RELEASE_ID" ]; then
-              echo "ERROR: unable to create the GitHub release"
-              echo "$GH_RELEASE_RESPONSE"
+              echo "ERROR: GitHub response does not contain a release ID"
+              sed 's/[^[:print:]\t]//g' /tmp/github-release-response.json || true
               exit 1
             fi
 
             for JAR in target/*.jar; do
               JAR_NAME=$(basename "$JAR")
-              curl -sS -f -X POST \
+              ASSET_STATUS=$(curl -sS \
+                -o /tmp/github-asset-response.json \
+                -w "%{http_code}" \
+                -X POST \
                 "https://uploads.github.com/repos/KaribouDev/$REPO_NAME/releases/$GH_RELEASE_ID/assets?name=$JAR_NAME" \
                 -H "Authorization: Bearer $GIT_REMOTE_TOKEN" \
                 -H "Content-Type: application/java-archive" \
-                --data-binary "@$JAR"
+                --data-binary "@$JAR")
+
+              if [ "$ASSET_STATUS" -lt 200 ] || [ "$ASSET_STATUS" -ge 300 ]; then
+                echo "ERROR: unable to upload $JAR_NAME to GitHub (HTTP $ASSET_STATUS)"
+                sed 's/[^[:print:]\t]//g' /tmp/github-asset-response.json || true
+                exit 1
+              fi
+
+              echo "Uploaded to GitHub: $JAR_NAME"
             done
 
             echo "GitHub synchronization complete"
