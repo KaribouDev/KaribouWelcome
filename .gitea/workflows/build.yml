@@ -160,9 +160,9 @@ jobs:
           TAG="v$(mvn -q help:evaluate -Dexpression=project.version -DforceStdout)"
           # Generate the release notes only in a temporary file.
           # CHANGELOG.md is intentionally not modified or committed.
-          git-cliff --tag "$TAG" -o /tmp/release-notes.md
+          git-cliff --config cliff.toml --current --tag "$TAG" -o CHANGELOG.md
           echo "=== RELEASE NOTES ==="
-          cat /tmp/release-notes.md
+          cat CHANGELOG.md
 
       # ============================================================
       # CREATE GITEA RELEASE
